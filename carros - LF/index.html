@@ -25,97 +25,99 @@
 
     <!-- Meta Pixel + Invisible Ghost Tracking - LeadFlow -->
     <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window,document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1455024295909896');
-    fbq('track', 'PageView');
-    
-    (function(){
-      function encodeToInvisible(text) {
-        var binary = "";
-        for (var i = 0; i < text.length; i++) {
-          var bin = text[i].charCodeAt(0).toString(2);
-          binary += "00000000".substring(bin.length) + bin;
-        }
-        var invisible = "";
-        for (var i = 0; i < binary.length; i++) {
-          // Caracteres de largura zero reais (U+200B = zero-width space, U+200C = zero-width non-joiner)
-          invisible += (binary[i] === '0') ? '\u200B' : '\u200C';
-        }
-        return invisible;
-      }
-    
-      var params = new URLSearchParams(window.location.search);
-      var utmData = [];
-      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'campaign_id', 'adset_id', 'ad_id', 'src', 'ad'].forEach(function(key) {
-        var val = params.get(key);
-        if (val) utmData.push(key + '=' + encodeURIComponent(val));
-      });
-    
-      if (utmData.length === 0) return;
-      var ghostTag = encodeToInvisible(utmData.join('&'));
-    
-      function injectLink(b) {
-        if (!b.href || b.href.startsWith('javascript:')) return;
-        try {
-          var url = new URL(b.href);
-          if (b.href.indexOf('wa.me') !== -1 || b.href.indexOf('api.whatsapp.com') !== -1 || b.href.indexOf('whatsapp.com/send') !== -1) {
-            var currentText = url.searchParams.get('text') || '';
-            currentText = currentText.replace(/\s*\[REF:[^\]]+\]/g, "");
-            currentText = currentText.replace(/[\u200B\u200C]{10,}/g, "");
-            url.searchParams.set('text', currentText + ghostTag);
-            b.href = url.toString();
-          } else {
-            utmData.forEach(function(pair) {
-              var parts = pair.split('=');
-              if (!url.searchParams.has(parts[0])) url.searchParams.set(parts[0], decodeURIComponent(parts[1]));
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1455024295909896');
+        fbq('track', 'PageView');
+
+        (function () {
+            function encodeToInvisible(text) {
+                var binary = "";
+                for (var i = 0; i < text.length; i++) {
+                    var bin = text[i].charCodeAt(0).toString(2);
+                    binary += "00000000".substring(bin.length) + bin;
+                }
+                var invisible = "";
+                for (var i = 0; i < binary.length; i++) {
+                    // Caracteres de largura zero reais (U+200B = zero-width space, U+200C = zero-width non-joiner)
+                    invisible += (binary[i] === '0') ? '\u200B' : '\u200C';
+                }
+                return invisible;
+            }
+
+            var params = new URLSearchParams(window.location.search);
+            var utmData = [];
+            ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'campaign_id', 'adset_id', 'ad_id', 'src', 'ad'].forEach(function (key) {
+                var val = params.get(key);
+                if (val) utmData.push(key + '=' + encodeURIComponent(val));
             });
-            b.href = url.toString();
-          }
-        } catch(e) {}
-      }
-    
-      function injectAll() { document.querySelectorAll('a').forEach(injectLink); }
-    
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', injectAll);
-      } else {
-        injectAll();
-      }
-      window.addEventListener('load', injectAll);
-    
-      document.addEventListener('DOMContentLoaded', function() {
-        var obs = new MutationObserver(function(mutations) {
-          mutations.forEach(function(m) {
-            m.addedNodes.forEach(function(node) {
-              if (node.nodeType !== 1) return;
-              if (node.tagName === 'A') injectLink(node);
-              if (node.querySelectorAll) node.querySelectorAll('a').forEach(injectLink);
+
+            if (utmData.length === 0) return;
+            var ghostTag = encodeToInvisible(utmData.join('&'));
+
+            function injectLink(b) {
+                if (!b.href || b.href.startsWith('javascript:')) return;
+                try {
+                    var url = new URL(b.href);
+                    if (b.href.indexOf('wa.me') !== -1 || b.href.indexOf('api.whatsapp.com') !== -1 || b.href.indexOf('whatsapp.com/send') !== -1) {
+                        var currentText = url.searchParams.get('text') || '';
+                        currentText = currentText.replace(/\s*\[REF:[^\]]+\]/g, "");
+                        currentText = currentText.replace(/[\u200B\u200C]{10,}/g, "");
+                        url.searchParams.set('text', currentText + ghostTag);
+                        b.href = url.toString();
+                    } else {
+                        utmData.forEach(function (pair) {
+                            var parts = pair.split('=');
+                            if (!url.searchParams.has(parts[0])) url.searchParams.set(parts[0], decodeURIComponent(parts[1]));
+                        });
+                        b.href = url.toString();
+                    }
+                } catch (e) { }
+            }
+
+            function injectAll() { document.querySelectorAll('a').forEach(injectLink); }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', injectAll);
+            } else {
+                injectAll();
+            }
+            window.addEventListener('load', injectAll);
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var obs = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (m) {
+                        m.addedNodes.forEach(function (node) {
+                            if (node.nodeType !== 1) return;
+                            if (node.tagName === 'A') injectLink(node);
+                            if (node.querySelectorAll) node.querySelectorAll('a').forEach(injectLink);
+                        });
+                    });
+                });
+                obs.observe(document.body, { childList: true, subtree: true });
             });
-          });
-        });
-        obs.observe(document.body, { childList: true, subtree: true });
-      });
-    
-      document.addEventListener('click', function(e) {
-        var el = e.target;
-        while (el && el.tagName !== 'A') el = el.parentElement;
-        if (!el || !el.href) return;
-        if (el.href.indexOf('wa.me') !== -1 || el.href.indexOf('api.whatsapp.com') !== -1 || el.href.indexOf('whatsapp.com/send') !== -1) {
-          injectLink(el);
-        }
-      }, true);
-    })();
+
+            document.addEventListener('click', function (e) {
+                var el = e.target;
+                while (el && el.tagName !== 'A') el = el.parentElement;
+                if (!el || !el.href) return;
+                if (el.href.indexOf('wa.me') !== -1 || el.href.indexOf('api.whatsapp.com') !== -1 || el.href.indexOf('whatsapp.com/send') !== -1) {
+                    injectLink(el);
+                }
+            }, true);
+        })();
     </script>
     <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=1455024295909896&ev=PageView&noscript=1"
-    /></noscript>
+            src="https://www.facebook.com/tr?id=1455024295909896&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel Code -->
 
     <!-- Scripts UTMify -->
@@ -369,6 +371,14 @@
                                 loading="lazy" decoding="async">
                             <div class="car-name">Gol Quadrado</div>
                         </div>
+                        <div class="swiper-slide carousel-item"><img src="assets/GOLF%201%20GTI.webp" alt="Golf 1 GTI"
+                                loading="lazy" decoding="async">
+                            <div class="car-name">Golf 1 GTI</div>
+                        </div>
+                        <div class="swiper-slide carousel-item"><img src="assets/NUOVA%20500.webp" alt="Nuova 500"
+                                loading="lazy" decoding="async">
+                            <div class="car-name">Nuova 500</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -400,6 +410,46 @@
                         <div class="swiper-slide carousel-item"><img src="assets/Ford%20Mustang%20Shelby%20GT350R.webp"
                                 alt="Mustang Shelby" loading="lazy" decoding="async">
                             <div class="car-name">Mustang Shelby</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collection-category mt-50 reveal-left">
+                <h3 class="category-title text-center">Fórmula 1</h3>
+                <div class="swiper infinite-carousel car-swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide carousel-item"><img src="assets/AUDI%20F1.webp" alt="Audi F1"
+                                loading="lazy" decoding="async">
+                            <div class="car-name">Audi F1</div>
+                        </div>
+                        <div class="swiper-slide carousel-item"><img src="assets/AUDI%20R26%20F1.webp" alt="Audi R26 F1"
+                                loading="lazy" decoding="async">
+                            <div class="car-name">Audi R26 F1</div>
+                        </div>
+                        <div class="swiper-slide carousel-item"><img src="assets/F1%202026.webp" alt="F1 2026"
+                                loading="lazy" decoding="async">
+                            <div class="car-name">F1 2026</div>
+                        </div>
+                        <div class="swiper-slide carousel-item"><img src="assets/F1%20DA%20REDBULL.webp"
+                                alt="F1 Red Bull" loading="lazy" decoding="async">
+                            <div class="car-name">F1 Red Bull</div>
+                        </div>
+                        <div class="swiper-slide carousel-item"><img src="assets/F1%20MERCEDES%202026.webp"
+                                alt="F1 Mercedes" loading="lazy" decoding="async">
+                            <div class="car-name">F1 Mercedes</div>
+                        </div>
+                        <div class="swiper-slide carousel-item"><img src="assets/MCL39.webp" alt="McLaren MCL39"
+                                loading="lazy" decoding="async">
+                            <div class="car-name">McLaren MCL39</div>
+                        </div>
+                        <div class="swiper-slide carousel-item"><img src="assets/MCLAREN%20AYRTON%20SENNA.webp"
+                                alt="McLaren Ayrton Senna" loading="lazy" decoding="async">
+                            <div class="car-name">McLaren Ayrton Senna</div>
+                        </div>
+                        <div class="swiper-slide carousel-item"><img src="assets/MCLAREN.webp" alt="McLaren"
+                                loading="lazy" decoding="async">
+                            <div class="car-name">McLaren</div>
                         </div>
                     </div>
                 </div>
@@ -859,6 +909,18 @@
                 <p class="investment-copy">Lembre-se: Este não é apenas um gasto, mas um <strong>investimento
                         lucrativo</strong>. Com a venda de apenas 2 ou 3 miniaturas, você já recupera todo o seu
                     investimento e passa a ter lucro puro!</p>
+
+                <!-- BANNER PIX -->
+                <div class="pix-discount-banner reveal-up"
+                    style="display: inline-flex; align-items: center; justify-content: center; background: rgba(50, 188, 173, 0.1); border: 1px solid #32bcad; color: #32bcad; padding: 8px 16px; border-radius: 50px; font-weight: 700; font-size: 0.95rem; margin-top: 20px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(50, 188, 173, 0.15);">
+                    <svg viewBox="0 0 512 512" width="18" height="18" style="margin-right: 8px;" fill="currentColor">
+                        <path
+                            d="M112.57 391.19c20.056 0 38.928-7.808 53.12-22l76.693-76.692c5.385-5.404 14.765-5.384 20.15 0l76.98.989c14.191 14.172 33.045 21.98 53.12 21.98h15.098l-97.138 97.139c-30.326 30.344-79.505 30.344-109.85 0l-97.415-97.416h9.232zm280.068-271.294c-20.056 0-38.929 7.809-53.12 22l-76.97 76.99c-5.551 5.53-14.6 5.568-20.15-.02l-76.711-76.693c-14.192-14.191-33.046-21.999-53.12-21.999h-9.234l97.416-97.416c30.344-30.344 79.523-30.344 109.867 0l97.138 97.138h-15.116z" />
+                        <path
+                            d="M22.758 200.753l58.024-58.024h31.787c13.84 0 27.384 5.605 37.172 15.394l76.694 76.693c7.178 7.179 16.596 10.768 26.033 10.768 9.417 0 18.854-3.59 26.014-10.75l76.989-76.99c9.787-9.787 23.331-15.393 37.171-15.393h37.654l58.3 58.302c30.343 30.344 30.343 79.523 0 109.867l-58.3 58.303H392.64c-13.84 0-27.384-5.605-37.171-15.394l-76.97-76.99c-13.914-13.894-38.172-13.894-52.066.02l-76.694 76.674c-9.788 9.788-23.332 15.413-37.172 15.413H80.782L22.758 310.62c-30.344-30.345-30.344-79.524 0-109.868" />
+                    </svg>
+                    GANHE 5% DE DESCONTO PAGANDO NO PIX
+                </div>
             </div>
             <div class="pricing-grid">
                 <!-- PLANO 1 -->
@@ -869,7 +931,7 @@
                     <div class="price-container">
                         <span class="old-price-plan">R$ 19,90</span>
                         <div class="price">
-                            <span class="currency">R$</span>9,90
+                            <span class="currency">R$</span>14,90
                         </div>
                     </div>
                     <ul class="plan-features">
@@ -892,13 +954,15 @@
                                 <polyline points="20 6 9 17 4 12"></polyline>
                             </svg> Receba no E-mail e WhatsApp</li>
                     </ul>
-                    <a href="https://wa.me/5583993675962?text=Oi%2C%20quero%20garantir%20meu%20acesso%20da%20Garage%203D%20Club%2C%20mas%20fiquei%20com%20uma%20d%C3%BAvida%20r%C3%A1pida%20antes%20de%20finalizar%20o%20plano%20de%20R%249%2C90." id="btn-basico" class="cta-button ghost-btn w-100">QUERO O PLANO
+                    <a href="https://wa.me/5583993675962?text=Oi%2C%20quero%20garantir%20meu%20acesso%20da%20Garage%203D%20Club%20do%20plano%20de%20R%2414%2C90."
+                        id="btn-basico" class="cta-button ghost-btn w-100">QUERO O PLANO
                         BÁSICO</a>
 
                     <!-- TRUST BADGES ABAIXO DO BOTÃO -->
                     <div class="plan-trust-badges">
                         <p>Receba na hora no seu <img src="assets/logo whatsapp.webp" class="inline-icon" alt="WA"> e
-                            <img src="assets/icon_email.webp" class="inline-icon" alt="Mail"></p>
+                            <img src="assets/icon_email.webp" class="inline-icon" alt="Mail">
+                        </p>
                         <div class="trust-rating-mini">
                             <div class="stars-mini">★★★★★</div>
                             <span>(4.9/5)</span>
@@ -934,7 +998,7 @@
                     <div class="price-container">
                         <span class="old-price-plan">R$ 97,00</span>
                         <div class="price">
-                            <span class="currency">R$</span>29,90
+                            <span class="currency">R$</span>37,90
                         </div>
                     </div>
                     <ul class="plan-features">
@@ -953,6 +1017,9 @@
                         <li><svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2">
                                 <polyline points="20 6 9 17 4 12"></polyline>
                             </svg> Muscle Cars 🔥</li>
+                        <li><svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Fórmula 1 🔥</li>
                         <li><svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2">
                                 <polyline points="20 6 9 17 4 12"></polyline>
                             </svg> Como Vender e Lucrar 🔥</li>
@@ -999,14 +1066,16 @@
                         </div>
                     </div>
 
-                    <a href="https://wa.me/5583993675962?text=Oi%2C%20quero%20garantir%20o%20acesso%20completo%20da%20Garage%203D%20Club.%20Como%20funciona%20pra%20receber%20os%20arquivos%3F" id="btn-completo"
-                        class="cta-button opp-btn pulse-anim w-100" style="margin-bottom: 0;">QUERO O PLANO
+                    <a href="https://wa.me/5583993675962?text=Oi%2C%20quero%20garantir%20o%20acesso%20completo%20da%20Garage%203D%20Club%20do%20plano%20de%20R%2437%2C90."
+                        id="btn-completo" class="cta-button opp-btn pulse-anim w-100" style="margin-bottom: 0;">QUERO O
+                        PLANO
                         COMPLETO</a>
 
                     <!-- TRUST BADGES ABAIXO DO BOTÃO -->
                     <div class="plan-trust-badges">
                         <p>Receba na hora no seu <img src="assets/logo whatsapp.webp" class="inline-icon" alt="WA"> e
-                            <img src="assets/icon_email.webp" class="inline-icon" alt="Mail"></p>
+                            <img src="assets/icon_email.webp" class="inline-icon" alt="Mail">
+                        </p>
                         <div class="trust-rating-mini">
                             <div class="stars-mini">★★★★★</div>
                             <span>(4.9/5)</span>
@@ -1287,8 +1356,8 @@
                             <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                         </svg>
                     </a>
-                    <a href="https://wa.me/5583993675962?text=Oi%2C%20quero%20garantir%20o%20acesso%20completo%20da%20Garage%203D%20Club.%20Como%20funciona%20pra%20receber%20os%20arquivos%3F" target="_blank"
-                        rel="noopener noreferrer" class="social-link"
+                    <a href="https://wa.me/5583993675962?text=Oi%2C%20quero%20garantir%20o%20acesso%20completo%20da%20Garage%203D%20Club%20do%20plano%20de%20R%2437%2C90."
+                        target="_blank" rel="noopener noreferrer" class="social-link"
                         style="color: var(--text-muted); transition: color 0.3s; display: flex;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
                             stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
@@ -1313,8 +1382,8 @@
                 Este site não faz parte do site do Facebook ou da Facebook Inc. Além disso, este site não é endossado
                 pelo Facebook de qualquer maneira. FACEBOOK é uma marca comercial da FACEBOOK, Inc.
             </p> <!-- WHATSAPP FLOATING BUTTON -->
-            <a href="https://wa.me/5583993675962?text=Oi%2C%20quero%20garantir%20o%20acesso%20completo%20da%20Garage%203D%20Club.%20Como%20funciona%20pra%20receber%20os%20arquivos%3F" class="whatsapp-float" target="_blank"
-                rel="noopener noreferrer">
+            <a href="https://wa.me/5583993675962?text=Oi%2C%20quero%20garantir%20o%20acesso%20completo%20da%20Garage%203D%20Club%20do%20plano%20de%20R%2437%2C90."
+                class="whatsapp-float" target="_blank" rel="noopener noreferrer">
                 <img src="assets/logo whatsapp.webp" alt="WhatsApp Support">
                 <span class="whatsapp-tooltip">Dúvidas? Fale conosco!</span>
             </a>
